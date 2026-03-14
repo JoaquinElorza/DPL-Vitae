@@ -9,6 +9,7 @@ class Operador extends Model
     protected $table = 'operador';
     protected $primaryKey = 'id_usuario';
     public $incrementing = false;
+    public $timestamps = false;
 
     protected $fillable = [
         'id_usuario',

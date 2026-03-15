@@ -9,6 +9,7 @@ class Paramedico extends Model
     protected $table = 'paramedico';
     protected $primaryKey = 'id_usuario';
     public $incrementing = false;
+    public $timestamps = false;
 
     protected $fillable = [
         'id_usuario',

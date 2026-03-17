@@ -59,6 +59,11 @@ Route::get('/empresa/{id}/imagen', [EmpresaController::class, 'imagen'])->name('
 
 //CRUD PADECIMIENTOS
 Route::get('/admin/padecimientos', [PadecimientosController::class, 'index'])->name('padecimientos.index');
+Route::get('/admin/padecimientos/create', [PadecimientosController::class, 'create'])->name('padecimientos.create');
+Route::post('/admin/padecimientos', [PadecimientosController::class, 'store'])->name('padecimientos.store');
+Route::get('/admin/padecimientos/{id}/edit', [PadecimientosController::class, 'edit'])->name('padecimientos.edit');
+Route::put('/admin/padecimientos/{id}', [PadecimientosController::class, 'update'])->name('padecimientos.update');
+Route::delete('/admin/padecimientos/{id}', [PadecimientosController::class, 'delete'])->name('padecimientos.destroy');
 
 //CRUD SERVICIOS
 Route::get('/admin/servicios', [ServiciosController::class, 'index'])->name('servicios.index');

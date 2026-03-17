@@ -6,9 +6,10 @@
 @section('content')
     <div class="mb-6 flex justify-between items-center">
         <h3 class="text-2xl font-semibold">Listado de padecimientos</h3>
-            <!-- aqui va el boton de crear padecimiento jsjs-->
-           class="bg-[#d90000] text-white px-5 py-3 rounded-xl hover:bg-red-800 transition">
-            Registrar padecimiento
+            <a href="{{ route('padecimientos.create') }}"
+                class="bg-[#d90000] text-white px-5 py-3 rounded-xl hover:bg-red-800 transition">
+                Registrar padecimiento
+            </a>
     </div>
 
     @if(session('success'))

@@ -14,10 +14,11 @@
 </div>
 
 <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+<div class="max-h-[500px] overflow-y-auto">
 
 <table class="w-full text-left">
 
-<thead class="bg-[#d90000] text-white">
+<thead class="bg-[#d90000] text-white sticky top-0 z-10">
 <tr>
 <th class="px-6 py-4">ID</th>
 <th class="px-6 py-4">Placa</th>
@@ -79,6 +80,7 @@ No hay ambulancias registradas.
 </tbody>
 </table>
 
+</div>
 </div>
 
 @endsection

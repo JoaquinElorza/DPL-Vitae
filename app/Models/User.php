@@ -17,7 +17,8 @@ class User extends Authenticatable
         'ap_paterno',
         'ap_materno',
         'email',
-        'password'
+        'password',
+        'telefono'
     ];
 
     protected $hidden = [

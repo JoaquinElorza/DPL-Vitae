@@ -1,10 +1,11 @@
 <?php
 
-namespaceApp\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Traslado extends Model{
+class Traslado extends Model
+{
     protected $table = 'traslado';
     protected $primaryKey = 'id_traslado';
 

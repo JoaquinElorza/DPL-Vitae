@@ -18,7 +18,7 @@ class Ambulancia extends Model
         'id_operador'
     ];
 
-    public function tipo()
+    public function tipo_ambulancia()
     {
         return $this->belongsTo(TipoAmbulancia::class,'id_tipo_ambulancia');
     }

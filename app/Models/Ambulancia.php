@@ -10,15 +10,14 @@ class Ambulancia extends Model
     protected $primaryKey = 'id_ambulancia';
     public $timestamps = false;
 
-
     protected $fillable = [
         'placa',
         'estado',
         'id_tipo_ambulancia',
-        'id_operador'
+        'id_operador',
     ];
 
-    public function tipo_ambulancia()
+    public function tipo()
     {
         return $this->belongsTo(TipoAmbulancia::class,'id_tipo_ambulancia');
     }

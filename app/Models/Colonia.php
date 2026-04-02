@@ -8,6 +8,7 @@ class Colonia extends Model
 {
     protected $table = 'colonia';
     protected $primaryKey = 'id_colonia';
+    public $timestamps = false;
 
     protected $fillable = [
         'nombre_colonia',

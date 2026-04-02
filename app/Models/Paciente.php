@@ -8,6 +8,7 @@ class Paciente extends Model
 {
     protected $table = 'paciente';
     protected $primaryKey = 'id_paciente';
+    public $timestamps = false;
 
     protected $fillable = [
         'nombre',
@@ -16,14 +17,20 @@ class Paciente extends Model
         'oxigeno',
         'fecha_nacimiento',
         'sexo',
-        'peso'
+        'peso',
+        'id_servicio',
+        'id_direccion'
     ];
 
-    public function Traslado()
+    public function servicio()
     {
-        return $this->hasOne(Traslado::class,'id_servicio');
+        return $this->belongsTo(Servicio::class,'id_servicio');
     }
 
+    public function direccion()
+    {
+        return $this->belongsTo(Direccion::class,'id_direccion');
+    }
 
     public function padecimientos()
     {

@@ -1,83 +1,94 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PersonalController;
-use App\Http\Controllers\InsumosController;
-use App\Http\Controllers\AmbulanciasController;
-use App\Http\Controllers\PadecimientosController;
-use App\Http\Controllers\ServiciosController;
+use Livewire\Volt\Volt;
+use App\Http\Controllers\ServicioController;
+use App\Http\Controllers\EventoController;
+use App\Http\Controllers\PacienteController;
+use App\Http\Controllers\PadecimientoController;
+use App\Http\Controllers\OperadorController;
+use App\Http\Controllers\ParamedicoController;
+use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\AmbulanciaController;
 use App\Http\Controllers\TipoAmbulanciaController;
+use App\Http\Controllers\InsumoController;
 use App\Http\Controllers\EmpresaController;
+use App\Http\Controllers\MunicipioController;
+use App\Http\Controllers\ColoniaController;
+use App\Http\Controllers\DireccionController;
+use App\Http\Controllers\CotizacionController;
+use App\Http\Controllers\EmpleadoController;
+use App\Http\Controllers\PagoController;
 
-//Ruta que irá por default cuando un cliente abra la pagina
+// ── Rutas públicas ──────────────────────────────────────────────────────────
 Route::get('/', function () {
     $empresa = \App\Models\Empresa::first();
-    return view('public.inicio', compact('empresa'));
+    return view('welcome', compact('empresa'));
+})->name('home');
+
+Route::get('cotizaciones/gracias', [CotizacionController::class, 'gracias'])->name('cotizaciones.gracias');
+Route::get('cotizaciones/rastrear', [CotizacionController::class, 'rastrear'])->name('cotizaciones.rastrear');
+
+// ── Portal del empleado ─────────────────────────────────────────────────────
+Route::middleware(['auth', 'es.empleado'])->group(function () {
+    Route::get('mi-panel', [EmpleadoController::class, 'miPanel'])->name('empleado.mi-panel');
+    Route::put('mi-panel/perfil', [EmpleadoController::class, 'actualizarPerfil'])->name('empleado.perfil.update');
 });
 
-//FORM COTIZACION
-Route::get('/cotizacion', function () {
-    return view('public.cotizacion');
+// ── Portal del cliente ──────────────────────────────────────────────────────
+Route::middleware(['auth', 'es.cliente'])->group(function () {
+    Route::get('cotizaciones/solicitar',  [CotizacionController::class, 'create'])->name('cotizaciones.create');
+    Route::post('cotizaciones/solicitar', [CotizacionController::class, 'store'])->name('cotizaciones.store');
+
+    Route::get('mis-solicitudes',                           [CotizacionController::class, 'misSolicitudes'])->name('cotizaciones.mis-solicitudes');
+    Route::get('mis-solicitudes/{cotizacion}',              [CotizacionController::class, 'miEstado'])->name('cotizaciones.mi-estado');
+    Route::post('mis-solicitudes/{cotizacion}/confirmar',   [CotizacionController::class, 'confirmar'])->name('cotizaciones.confirmar');
+    Route::post('mis-solicitudes/{cotizacion}/declinar',    [CotizacionController::class, 'declinar'])->name('cotizaciones.declinar');
+    Route::get('mis-solicitudes/{cotizacion}/descargar',    [CotizacionController::class, 'descargar'])->name('cotizaciones.descargar');
+
+    // MercadoPago
+    Route::get('mis-solicitudes/{cotizacion}/pagar',        [PagoController::class, 'iniciar'])->name('cotizaciones.pago.iniciar');
+    Route::get('mis-solicitudes/{cotizacion}/pago/success', [PagoController::class, 'success'])->name('cotizaciones.pago.success');
+    Route::get('mis-solicitudes/{cotizacion}/pago/failure', [PagoController::class, 'failure'])->name('cotizaciones.pago.failure');
+    Route::get('mis-solicitudes/{cotizacion}/pago/pending', [PagoController::class, 'pending'])->name('cotizaciones.pago.pending');
 });
 
-//DASHBOARD ADMIN
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
+// Webhook MP (público, sin auth ni es.cliente)
+Route::post('webhooks/mercadopago', [PagoController::class, 'webhook'])
+    ->name('webhooks.mercadopago')
+    ->withoutMiddleware(['auth']);
+
+// ── Panel de administración ─────────────────────────────────────────────────
+Route::middleware(['auth', 'verified', 'es.admin'])->group(function () {
+
+    Route::view('dashboard', 'dashboard')->name('dashboard');
+
+    Route::redirect('settings', 'settings/profile');
+    Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
+    Volt::route('settings/password', 'settings.password')->name('settings.password');
+
+    Route::resource('servicios',         ServicioController::class);
+    Route::resource('eventos',           EventoController::class);
+    Route::resource('pacientes',         PacienteController::class);
+    Route::resource('padecimientos',     PadecimientoController::class);
+    Route::resource('operadores',        OperadorController::class);
+    Route::resource('paramedicos',       ParamedicoController::class);
+    Route::resource('clientes',          ClienteController::class);
+    Route::resource('ambulancias',       AmbulanciaController::class);
+    Route::resource('tipos-ambulancia',  TipoAmbulanciaController::class)
+        ->parameters(['tipos-ambulancia' => 'tipoAmbulancia']);
+    Route::resource('insumos',           InsumoController::class);
+    Route::resource('empresas',          EmpresaController::class);
+    Route::resource('municipios',        MunicipioController::class);
+    Route::resource('colonias',          ColoniaController::class);
+    Route::resource('direcciones',       DireccionController::class);
+
+    Route::get('cotizaciones',                          [CotizacionController::class, 'index'])->name('cotizaciones.index');
+    Route::get('cotizaciones/{cotizacion}',             [CotizacionController::class, 'show'])->name('cotizaciones.show');
+    Route::put('cotizaciones/{cotizacion}',             [CotizacionController::class, 'update'])->name('cotizaciones.update');
+    Route::post('cotizaciones/{cotizacion}/aceptar',    [CotizacionController::class, 'aceptar'])->name('cotizaciones.aceptar');
+    Route::post('cotizaciones/{cotizacion}/rechazar',   [CotizacionController::class, 'rechazar'])->name('cotizaciones.rechazar');
+    Route::delete('cotizaciones/{cotizacion}',          [CotizacionController::class, 'destroy'])->name('cotizaciones.destroy');
 });
 
-//CRUD PERSONAL
-Route::get('/admin/personal', [PersonalController::class, 'index'])->name('personal.index');
-Route::get('/admin/personal/create', [PersonalController::class, 'create'])->name('personal.create');
-Route::post('/admin/personal', [PersonalController::class, 'store'])->name('personal.store');
-Route::get('/admin/personal/{id}/edit', [PersonalController::class, 'edit'])->name('personal.edit');
-Route::put('/admin/personal/{id}', [PersonalController::class, 'update'])->name('personal.update');
-Route::delete('/admin/personal/{id}', [PersonalController::class, 'destroy'])->name('personal.destroy');
-
-//CRUD AMBULANCIAS
-Route::get('/admin/ambulancias', [AmbulanciasController::class, 'index'])->name('ambulancias.index');
-Route::get('/admin/ambulancias/create', [AmbulanciasController::class, 'create'])->name('ambulancias.create');
-Route::post('/admin/ambulancias', [AmbulanciasController::class, 'store'])->name('ambulancias.store');
-Route::get('/admin/ambulancias/{id}/edit', [AmbulanciasController::class, 'edit'])->name('ambulancias.edit');
-Route::put('/admin/ambulancias/{id}', [AmbulanciasController::class, 'update'])->name('ambulancias.update');
-Route::delete('/admin/ambulancias/{id}', [AmbulanciasController::class, 'destroy'])->name('ambulancias.destroy');
-
-//CRUD TIPO AMBULANCIA
-Route::post('/admin/tipo-ambulancia', [TipoAmbulanciaController::class, 'store'])->name('tipo_ambulancia.store');
-Route::get('/admin/tipo-ambulancia/{id}/edit', [TipoAmbulanciaController::class, 'edit'])->name('tipo_ambulancia.edit');
-Route::put('/admin/tipo-ambulancia/{id}', [TipoAmbulanciaController::class, 'update'])->name('tipo_ambulancia.update');
-Route::delete('/admin/tipo-ambulancia/{id}', [TipoAmbulanciaController::class, 'destroy'])->name('tipo_ambulancia.destroy');
-
-//CRUD EMPRESA
-Route::get('/admin/empresa', [EmpresaController::class, 'index'])->name('empresa.index');
-Route::get('/admin/empresa/create', [EmpresaController::class, 'create'])->name('empresa.create');
-Route::post('/admin/empresa', [EmpresaController::class, 'store'])->name('empresa.store');
-Route::get('/admin/empresa/{id}/edit', [EmpresaController::class, 'edit'])->name('empresa.edit');
-Route::put('/admin/empresa/{id}', [EmpresaController::class, 'update'])->name('empresa.update');
-Route::delete('/admin/empresa/{id}', [EmpresaController::class, 'destroy'])->name('empresa.destroy');
-Route::get('/empresa/{id}/logo', [EmpresaController::class, 'logo'])->name('empresa.logo');
-Route::get('/empresa/{id}/imagen', [EmpresaController::class, 'imagen'])->name('empresa.imagen');
-
-//CRUD PADECIMIENTOS
-Route::get('/admin/padecimientos', [PadecimientosController::class, 'index'])->name('padecimientos.index');
-Route::get('/admin/padecimientos/create', [PadecimientosController::class, 'create'])->name('padecimientos.create');
-Route::post('/admin/padecimientos', [PadecimientosController::class, 'store'])->name('padecimientos.store');
-Route::get('/admin/padecimientos/{id}/edit', [PadecimientosController::class, 'edit'])->name('padecimientos.edit');
-Route::put('/admin/padecimientos/{id}', [PadecimientosController::class, 'update'])->name('padecimientos.update');
-Route::delete('/admin/padecimientos/{id}', [PadecimientosController::class, 'delete'])->name('padecimientos.destroy');
-
-//CRUD SERVICIOS
-Route::get('/admin/servicios', [ServiciosController::class, 'index'])->name('servicios.index');
-Route::get('/admin/servicios/create', [ServiciosController::class, 'create'])->name('servicios.create');
-Route::post('/admin/servicios', [ServiciosController::class, 'store'])->name('servicios.store');
-Route::get('/admin/servicios/{id}/edit', [ServiciosController::class, 'edit'])->name('servicios.edit');
-Route::put('/admin/servicios/{id}', [ServiciosController::class, 'update'])->name('servicios.update');
-Route::delete('/admin/servicios/{id}', [ServiciosController::class, 'delete'])->name('servicios.destroy');
-Route::get('/admin/servicios/{id}', [ServiciosController::class, 'show'])->name('servicios.show');
-
-//CRUD INSUMOS
-Route::get('/admin/insumos', [InsumosController::class, 'index'])->name('insumos.index');
-Route::get('/admin/insumos/create', [InsumosController::class, 'create'])->name('insumos.create');
-Route::post('/admin/insumos', [InsumosController::class, 'store'])->name('insumos.store');
-Route::get('/admin/insumos/{id}/edit', [InsumosController::class, 'edit'])->name('insumos.edit');
-Route::put('/admin/insumos/{id}', [InsumosController::class, 'update'])->name('insumos.update');
-Route::delete('/admin/insumos/{id}', [InsumosController::class, 'destroy'])->name('insumos.destroy');
+require __DIR__ . '/auth.php';

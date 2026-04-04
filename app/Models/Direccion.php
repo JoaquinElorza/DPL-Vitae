@@ -8,6 +8,7 @@ class Direccion extends Model
 {
     protected $table = 'direccion';
     protected $primaryKey = 'id_direccion';
+    public $timestamps = false;
 
     protected $fillable = [
         'nombre_calle',

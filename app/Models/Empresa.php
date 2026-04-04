@@ -26,6 +26,7 @@ class Empresa extends Model
         'telefono',
         'correo',
         'sitio_web',
-        'direccion'
+        'direccion',
+        'costo_km',
     ];
 }

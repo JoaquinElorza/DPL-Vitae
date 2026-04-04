@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Hash; 
 
 class DatabaseSeeder extends Seeder
 {
@@ -19,8 +18,8 @@ class DatabaseSeeder extends Seeder
                 'ap_paterno' => 'ApellidoP'.$i,
                 'ap_materno' => 'ApellidoM'.$i,
                 'email' => 'usuario'.$i.'@correo.com',
-                'telefono' => '951'.rand(1000000,9999999),
-                'password' => Hash::make('123456'),
+                'created_at' => now(),
+                'updated_at' => now()
             ]);
         }
 

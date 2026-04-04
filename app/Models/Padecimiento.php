@@ -10,7 +10,6 @@ class Padecimiento extends Model
     protected $primaryKey = 'id_padecimiento';
     public $timestamps = false;
 
-
     protected $fillable = [
         'nombre_padecimiento',
         'nivel_riesgo',

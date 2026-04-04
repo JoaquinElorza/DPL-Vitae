@@ -20,9 +20,8 @@ return new class extends Migration
             $table->string('ap_materno',100)->nullable();
 
             $table->string('email')->unique();
-            $table->string('password');
+            $table->string('password')->nullable();
 
-            $table->string('telefono', 14);
             $table->rememberToken();
 
             $table->timestamps();

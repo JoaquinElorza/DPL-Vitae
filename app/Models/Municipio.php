@@ -8,6 +8,7 @@ class Municipio extends Model
 {
     protected $table = 'municipio';
     protected $primaryKey = 'id_municipio';
+    public $timestamps = false;
 
     protected $fillable = [
         'nombre_municipio'

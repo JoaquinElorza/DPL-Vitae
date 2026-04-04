@@ -10,10 +10,10 @@ class TipoAmbulancia extends Model
     protected $primaryKey = 'id_tipo_ambulancia';
     public $timestamps = false;
 
-
     protected $fillable = [
         'nombre_tipo',
-        'descripcion'
+        'descripcion',
+        'costo_base',
     ];
 
     public function ambulancias()

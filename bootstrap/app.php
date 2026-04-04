@@ -11,7 +11,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/mercadopago',
+        ]);
+
+        $middleware->alias([
+            'es.admin'    => \App\Http\Middleware\EsAdmin::class,
+            'es.empleado' => \App\Http\Middleware\EsEmpleado::class,
+            'es.cliente'  => \App\Http\Middleware\EsCliente::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

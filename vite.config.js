@@ -28,6 +28,7 @@ export default defineConfig({
         'resources/css/app.css',
         'resources/assets/css/demo.css',
         'resources/js/app.js',
+        'resources/assets/vendor/scss/pages/page-auth.scss',
         ...pageJsFiles,
         ...vendorJsFiles,
         ...LibsJsFiles,

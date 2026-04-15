@@ -203,7 +203,7 @@
 
                         {{-- traslado o emergencia --}}
                         <div id="wrap-amb-fija" class="d-none mb-4">
-                            @php $tiposFijos = $tipoMaxCosto ? $tiposDisponibles->where('id_tipo_ambulancia', $tipoMaxCosto->id_tipo_ambulancia) : collect(); @endphp
+                            @php $tiposFijos = $tiposDisponibles; @endphp
                             @if($tiposFijos->isNotEmpty())
                             <div class="row g-2" id="grid-amb-fija">
                                 @foreach($tiposFijos as $tipo)

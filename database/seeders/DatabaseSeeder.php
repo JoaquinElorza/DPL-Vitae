@@ -47,19 +47,23 @@ class DatabaseSeeder extends Seeder
         }
 
         // TIPO AMBULANCIA
-        for ($i=1; $i<=10; $i++) {
             DB::table('tipo_ambulancia')->insert([
-                'nombre_tipo' => 'Tipo '.$i,
-                'descripcion' => 'Descripción tipo '.$i
+        [
+            'nombre_tipo' => 'Básica',
+            'descripcion' => 'Ambulancia básica'
+        ],
+        [
+            'nombre_tipo' => 'Avanzada',
+            'descripcion' => 'Ambulancia avanzada'
+        ]
             ]);
-        }
 
         // AMBULANCIAS
         for ($i=1; $i<=10; $i++) {
             DB::table('ambulancia')->insert([
                 'placa' => 'AMB-'.$i,
                 'estado' => 'Disponible',
-                'id_tipo_ambulancia' => rand(1,10),
+                'id_tipo_ambulancia' => rand(1,2),
                 'id_operador' => rand(1,10)
             ]);
         }

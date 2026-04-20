@@ -97,6 +97,19 @@
 
     </div>
 
+    <form method="GET" action="{{ url()->current() }}">
+        <select name="tipo" class="form-select" onchange="this.form.submit()">
+            <option value="">Todos</option>
+
+            @foreach ($tipos as $value => $label)
+                <option value="{{ $value }}" {{ request('tipo') == $value ? 'selected' : '' }}>
+                    {{ $label }}
+                </option>
+            @endforeach
+        </select>
+    </form>
+
+
     <div class="row g-4">
 
         <div class="col-12">
@@ -118,7 +131,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($ultimosServicios as $servicio)
+
+
+                            @forelse($servicios as $servicio)
                             <tr>
                                 <td>{{ $servicio->id_servicio }}</td>
                                 <td>{{ \Carbon\Carbon::parse($servicio->fecha_hora)->format('d/m/Y H:i') }}</td>

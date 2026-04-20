@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="layout-menu-fixed" data-base-url="{{url('/')}}" data-framework="laravel">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="layout-menu-fixed layout-menu-collapsed" data-base-url="{{url('/')}}" data-framework="laravel">
   <head>
     @include('partials.head')
   </head>
@@ -47,27 +47,55 @@
     @include('partials.scripts')
     <!-- / Include Scripts -->
 
+    <!-- Backdrop para móvil -->
+    <div class="menu-backdrop" id="menu-backdrop"></div>
+
     <script>
       (function () {
-        var btn = document.getElementById('menu-toggle-btn');
-        var menu = document.getElementById('layout-menu');
-        var wrapper = document.querySelector('.layout-wrapper');
+        var html = document.documentElement;
 
-        if (btn && menu) {
-          btn.addEventListener('click', function () {
-            var isOpen = menu.classList.contains('menu-open');
-            if (isOpen) {
-              menu.classList.remove('menu-open');
-              menu.style.transform = '';
-              menu.style.display = '';
-              if (wrapper) wrapper.classList.remove('layout-menu-expanded');
-            } else {
-              menu.classList.add('menu-open');
-              menu.style.display = 'block';
-              if (wrapper) wrapper.classList.add('layout-menu-expanded');
-            }
-          });
+        function isMobile() { return window.innerWidth < 1200; }
+
+        function isExpanded() {
+          return isMobile()
+            ? html.classList.contains('layout-menu-expanded')
+            : !html.classList.contains('layout-menu-collapsed');
         }
+
+        function syncIcon() {
+          var btn = document.getElementById('sidebar-close-btn');
+          if (btn) btn.classList.toggle('is-open', isExpanded());
+        }
+
+        function toggleMenu() {
+          html.classList.add('layout-transitioning');
+          if (isMobile()) {
+            html.classList.toggle('layout-menu-expanded');
+            var bd = document.getElementById('menu-backdrop');
+            if (bd) bd.classList.toggle('show', html.classList.contains('layout-menu-expanded'));
+          } else {
+            html.classList.toggle('layout-menu-collapsed');
+          }
+          setTimeout(function () { html.classList.remove('layout-transitioning'); }, 300);
+          syncIcon();
+        }
+
+        function bind() {
+          var btn = document.getElementById('sidebar-close-btn');
+          if (btn) btn.onclick = toggleMenu;
+
+          var bd = document.getElementById('menu-backdrop');
+          if (bd) bd.onclick = function () {
+            html.classList.remove('layout-menu-expanded');
+            bd.classList.remove('show');
+            syncIcon();
+          };
+
+          syncIcon();
+        }
+
+        document.addEventListener('DOMContentLoaded', bind);
+        document.addEventListener('livewire:navigated', bind);
       })();
     </script>
   </body>

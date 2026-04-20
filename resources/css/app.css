@@ -25,24 +25,98 @@
     background: rgba(105, 108, 255, .06);
 }
 
-/* ── Animación del menú lateral ── */
+/* ── Botón hamburguesa animado ── */
+.hamburger-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.hamburger-btn:hover {
+    background: rgba(105, 108, 255, 0.08);
+}
+
+.hamburger-icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 20px;
+    height: 14px;
+    position: relative;
+}
+
+.hamburger-icon span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: #566a7f;
+    border-radius: 2px;
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity   0.28s ease,
+                width     0.28s ease;
+    transform-origin: center;
+}
+
+/* Estado abierto: convierte ☰ en ✕ */
+.hamburger-btn.is-open .hamburger-icon span:nth-child(1),
+.sidebar-hamburger-btn.is-open .hamburger-icon span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+}
+.hamburger-btn.is-open .hamburger-icon span:nth-child(2),
+.sidebar-hamburger-btn.is-open .hamburger-icon span:nth-child(2) {
+    opacity: 0;
+    width: 0;
+}
+.hamburger-btn.is-open .hamburger-icon span:nth-child(3),
+.sidebar-hamburger-btn.is-open .hamburger-icon span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+}
+
+
+/* ── Hamburguesa como ítem del sidebar ── */
+/* Elimina la flecha que el template agrega a menu-link */
+#sidebar-close-btn::after,
+#sidebar-close-btn::before { display: none !important; }
+.sidebar-hamburger-btn .hamburger-icon {
+    width: 18px;
+    height: 13px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar-hamburger-btn .hamburger-icon span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease, width 0.28s ease;
+    transform-origin: center;
+}
+
+.sidebar-hamburger-btn.is-open .hamburger-icon span:nth-child(1) { transform: translateY(5px) rotate(45deg); }
+.sidebar-hamburger-btn.is-open .hamburger-icon span:nth-child(2) { opacity: 0; width: 0; }
+.sidebar-hamburger-btn.is-open .hamburger-icon span:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
+
+/* ── Menú lateral (animaciones) ── */
 #layout-menu {
   transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
               box-shadow 0.28s ease;
   will-change: transform;
 }
 
-#layout-menu.menu-collapsed {
-  transform: translateX(-100%) !important;
-  box-shadow: none !important;
-}
-
-/* El contenido también transiciona cuando el menú se abre/cierra */
+/* Anima el desplazamiento del contenido principal al plegar/desplegar */
 .layout-page {
-  transition: margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: padding-inline-start 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Overlay semitransparente (visible en móvil cuando el menú está abierto) */
+/* Overlay semitransparente (solo en móvil cuando el menú está desplegado) */
 .menu-backdrop {
   position: fixed;
   inset: 0;

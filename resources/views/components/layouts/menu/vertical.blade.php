@@ -1,7 +1,9 @@
 <!-- Menu -->
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme" style="overflow-y: auto; height: 100vh;">
   <div class="app-brand demo">
-    <a href="{{ url('/') }}" class="app-brand-link"><x-app-logo /></a>
+    <a href="{{ url('/') }}" class="app-brand-link d-flex align-items-center text-decoration-none">
+      <i class="bx bx-arrow-back fs-4 text-primary"></i>
+    </a>
   </div>
 
   <div class="menu-inner-shadow"></div>
@@ -9,6 +11,20 @@
   @php $esEmpleado = auth()->check() && auth()->user()->loadMissing(['operador','paramedico','cliente'])->esEmpleado(); @endphp
 
   <ul class="menu-inner py-1">
+
+    {{-- Botón hamburguesa como primer ítem del menú --}}
+    <li class="menu-item">
+      <a href="javascript:void(0)" id="sidebar-close-btn" class="menu-link sidebar-hamburger-btn" aria-label="Abrir/cerrar menú">
+        <span class="menu-icon tf-icons">
+          <span class="hamburger-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </span>
+        <div class="text-truncate">Menú</div>
+      </a>
+    </li>
 
     @if($esEmpleado)
     {{-- menú empleados --}}
@@ -124,7 +140,6 @@
         <div class="text-truncate">Empresas</div>
       </a>
     </li>
-
 
     <li class="menu-item {{ request()->is('cotizaciones*') ? 'active' : '' }}">
       <a class="menu-link" href="{{ route('cotizaciones.index') }}" wire:navigate>

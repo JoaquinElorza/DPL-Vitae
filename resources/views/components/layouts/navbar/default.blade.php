@@ -9,16 +9,7 @@
   class="layout-navbar container-xxl navbar-detached navbar navbar-expand-xl align-items-center bg-navbar-theme"
   id="layout-navbar">
 
-  {{-- botón menú, solo para admins --}}
-  @unless($esEmpleado)
-  <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0">
-    <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)" id="menu-toggle-btn">
-      <i class="icon-base bx bx-menu icon-md"></i>
-    </a>
-  </div>
-  @endunless
-
-  <div class="navbar-nav-right d-flex align-items-center {{ $esEmpleado ? 'w-100 justify-content-between' : 'justify-content-end' }}" id="navbar-collapse">
+  <div class="navbar-nav-right d-flex align-items-center w-100 justify-content-between" id="navbar-collapse">
 
     @if($esEmpleado)
     {{-- nombre del empleado --}}
@@ -42,7 +33,7 @@
     </div>
     @endif
 
-    <ul class="navbar-nav flex-row align-items-center ms-auto">
+    <ul class="navbar-nav flex-row align-items-center ms-auto gap-1">
 
       {{-- dropdown usuario --}}
       <li class="nav-item navbar-dropdown dropdown-user dropdown">
@@ -103,6 +94,7 @@
           </ul>
         @endif
       </li>
+
     </ul>
   </div>
 </nav>

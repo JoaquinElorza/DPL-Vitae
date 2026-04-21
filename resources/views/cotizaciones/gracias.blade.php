@@ -53,11 +53,11 @@
                 @php $u = auth()->user(); $u->loadMissing(['operador','paramedico','cliente']); @endphp
                 @if($u->esAdmin())
                     <a href="{{ route('cotizaciones.index') }}" class="btn btn-primary">
-                        <i class="bx bx-list-ul me-1"></i> Ver todas las cotizaciones
+                        <i class="bx bx-arrow-back me-1"></i> Ver todas las cotizaciones
                     </a>
                 @else
                     <a href="{{ route('cotizaciones.mis-solicitudes') }}" class="btn btn-primary">
-                        <i class="bx bx-list-ul me-1"></i> Ver mis solicitudes
+                        <i class="bx bx-arrow-back me-1"></i> Ver mis solicitudes
                     </a>
                 @endif
             @else

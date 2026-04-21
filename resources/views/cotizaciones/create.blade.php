@@ -61,7 +61,7 @@
         <div class="d-flex align-items-center gap-2">
             @auth
             <a href="{{ route('cotizaciones.mis-solicitudes') }}" class="btn btn-outline-primary btn-sm">
-                <i class="bx bx-list-ul me-1"></i> Mis solicitudes
+                <i class="bx bx-arrow-back me-1"></i> Mis solicitudes
             </a>
             @endauth
             <a href="{{ route('home') }}" class="btn btn-outline-secondary btn-sm">

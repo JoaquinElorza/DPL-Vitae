@@ -100,7 +100,7 @@
     <form method="GET" action="{{ url()->current() }}">
         
 
-    
+    <button type="submit">Filtrar</button>
 
     <!-- filtro tipo -->
     <select name="tipo">
@@ -121,11 +121,18 @@
                 </option>
             @endforeach
         </select>
+
+     <!-- filtro ambulancia -->
+    <select name="ambulancia">
+        <option value="">Todas las ambulancias</option>
+            @foreach ($ambulancias as $ambulancia)
+                <option value="{{ $ambulancia->id_ambulancia }}"
+                {{ request('ambulancia') == $ambulancia->id_ambulancia ? 'selected' : '' }}>
+                    {{ $ambulancia->placa }}
+                </option>
+            @endforeach
+        </select>
     </form> 
-
-    <!-- filtro estado -->
-
-    <button type="submit">Filtrar</button>
 
     <div class="row g-4">
 

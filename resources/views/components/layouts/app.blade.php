@@ -84,6 +84,9 @@
           var btn = document.getElementById('sidebar-close-btn');
           if (btn) btn.onclick = toggleMenu;
 
+          var navBtn = document.getElementById('navbar-hamburger-btn');
+          if (navBtn) navBtn.onclick = toggleMenu;
+
           var bd = document.getElementById('menu-backdrop');
           if (bd) bd.onclick = function () {
             html.classList.remove('layout-menu-expanded');

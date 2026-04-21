@@ -11,6 +11,17 @@
 
   <div class="navbar-nav-right d-flex align-items-center w-100 justify-content-between" id="navbar-collapse">
 
+    {{-- Hamburguesa visible solo en móvil (sidebar oculto en pantallas pequeñas) --}}
+    <button id="navbar-hamburger-btn"
+            class="d-xl-none btn btn-sm p-1 me-2 navbar-hamburger-btn"
+            aria-label="Abrir menú">
+      <span class="hamburger-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+
     @if($esEmpleado)
     {{-- nombre del empleado --}}
     <span class="fw-semibold text-muted small">
@@ -41,7 +52,7 @@
           <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
             <div class="perfil-initials" style="width:40px;height:40px;font-size:.9rem;">{{ $iniciales }}</div>
           </a>
-          <ul class="dropdown-menu dropdown-menu-end" style="min-width:280px;">
+          <ul class="dropdown-menu dropdown-menu-end">
             <li>
               <button class="navbar-perfil-btn px-3 py-2"
                       type="button"

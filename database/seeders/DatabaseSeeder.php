@@ -73,7 +73,6 @@ class DatabaseSeeder extends Seeder
                 'placa'              => 'AMB-' . $i,
                 'estado'             => 'Disponible',
                 'id_tipo_ambulancia' => rand(1, 2),
-                'id_operador'        => rand(1, 10),
             ]);
         }
 

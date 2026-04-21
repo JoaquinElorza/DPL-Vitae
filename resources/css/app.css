@@ -104,6 +104,28 @@
 .sidebar-hamburger-btn.is-open .hamburger-icon span:nth-child(2) { opacity: 0; width: 0; }
 .sidebar-hamburger-btn.is-open .hamburger-icon span:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
 
+/* ── Paginación en tablas ── */
+.card-footer:has(.pagination) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: .75rem 1.25rem;
+    background: transparent;
+    border-top: 1px solid var(--bs-border-color);
+}
+
+.card-footer .pagination {
+    margin-bottom: 0;
+}
+
+.card-footer .pagination .page-link {
+    border-radius: 6px !important;
+    margin: 0 2px;
+    min-width: 32px;
+    text-align: center;
+    font-size: .85rem;
+}
+
 /* ── Menú lateral (animaciones) ── */
 #layout-menu {
   transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
@@ -132,4 +154,61 @@
   opacity: 1;
   visibility: visible;
   transition: opacity 0.28s ease, visibility 0s 0s;
+}
+
+/* ── Botón hamburguesa en navbar (móvil) ── */
+.navbar-hamburger-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+.navbar-hamburger-btn:hover {
+  background: rgba(105, 108, 255, 0.08);
+}
+.navbar-hamburger-btn .hamburger-icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 20px;
+  height: 14px;
+}
+.navbar-hamburger-btn .hamburger-icon span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: #566a7f;
+  border-radius: 2px;
+}
+
+/* ── Dropdown de usuario: responsivo ── */
+.navbar-dropdown .dropdown-menu {
+  min-width: 280px;
+}
+
+@media (max-width: 480px) {
+  .navbar-dropdown .dropdown-menu {
+    min-width: calc(100vw - 2rem);
+    max-width: calc(100vw - 2rem);
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    top: calc(100% + 8px) !important;
+  }
+}
+
+/* ── Navbar: ajustes móvil ── */
+@media (max-width: 575.98px) {
+  #layout-navbar {
+    padding-left: .75rem;
+    padding-right: .75rem;
+  }
+
+  .navbar-dropdown .perfil-initials {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: .8rem !important;
+  }
 }

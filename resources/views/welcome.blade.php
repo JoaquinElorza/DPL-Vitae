@@ -22,10 +22,30 @@
         }
         #hero-carousel .carousel-caption h1 { font-size: 3rem; font-weight: 700; }
         #hero-carousel .carousel-caption p  { font-size: 1.25rem; }
-        .section-title { font-weight: 700; position: relative; display: inline-block; }
+        .section-title {
+            font-weight: 700;
+            display: block;
+            text-align: center;
+        }
         .section-title::after {
-            content: ''; display: block; width: 60px; height: 4px;
-            background: #696cff; margin-top: 8px;
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: #696cff;
+            margin: 8px auto 0;
+        }
+        .section-title-left {
+            font-weight: 700;
+            display: block;
+        }
+        .section-title-left::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: #696cff;
+            margin-top: 8px;
         }
         .card-info { border: none; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.08); transition: transform .2s; }
         .card-info:hover { transform: translateY(-4px); }
@@ -36,6 +56,7 @@
 </head>
 <body>
 
+{{-- ── Navbar ── --}}
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
     <div class="container">
         @if($empresa && $empresa->logo_nombre)
@@ -47,41 +68,45 @@
                 {{ $empresa->nombre ?? config('app.name') }}
             </a>
         @endif
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
             <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navMain">
             <ul class="navbar-nav ms-auto align-items-center gap-2">
                 <li class="nav-item"><a class="nav-link" href="#nosotros">Nosotros</a></li>
                 <li class="nav-item"><a class="nav-link" href="#mision">Misión y Visión</a></li>
                 <li class="nav-item"><a class="nav-link" href="#valores">Valores</a></li>
                 <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
+
                 @auth
-                <li class="nav-item">
-                    <a href="{{ route('cotizaciones.mis-solicitudes') }}" class="nav-link text-muted">
-                        <i class="bx bx-list-ul me-1"></i> Mis solicitudes
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('cotizaciones.create') }}" class="btn btn-outline-primary btn-sm px-3">
-                        <i class="bx bx-calculator me-1"></i> Cotizar
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a href="{{ route('cotizaciones.mis-solicitudes') }}" class="nav-link text-muted">
+                            <i class="bx bx-list-ul me-1"></i> Mis solicitudes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('cotizaciones.create') }}" class="btn btn-outline-primary btn-sm px-3">
+                            <i class="bx bx-calculator me-1"></i> Cotizar
+                        </a>
+                    </li>
                 @else
-                <li class="nav-item">
-                    <a href="{{ route('cotizaciones.create') }}" class="btn btn-outline-primary btn-sm px-3">
-                        <i class="bx bx-calculator me-1"></i> Cotizar
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('login') }}" class="btn btn-primary btn-sm px-3">Iniciar Sesión</a>
-                </li>
+                    <li class="nav-item">
+                        <a href="{{ route('cotizaciones.create') }}" class="btn btn-outline-primary btn-sm px-3">
+                            <i class="bx bx-calculator me-1"></i> Cotizar
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('login') }}" class="btn btn-primary btn-sm px-3">Iniciar Sesión</a>
+                    </li>
                 @endauth
             </ul>
         </div>
     </div>
 </nav>
 
+{{-- ── Hero Carousel ── --}}
 <div id="hero-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
     <div class="carousel-indicators">
         <button type="button" data-bs-target="#hero-carousel" data-bs-slide-to="0" class="active"></button>
@@ -89,9 +114,11 @@
             <button type="button" data-bs-target="#hero-carousel" data-bs-slide-to="1"></button>
         @endif
         @if($empresa && $empresa->vision)
-            <button type="button" data-bs-target="#hero-carousel" data-bs-slide-to="{{ ($empresa && $empresa->mision) ? 2 : 1 }}"></button>
+            <button type="button" data-bs-target="#hero-carousel"
+                data-bs-slide-to="{{ ($empresa && $empresa->mision) ? 2 : 1 }}"></button>
         @endif
     </div>
+
     <div class="carousel-inner">
         <div class="carousel-item active" style="background: linear-gradient(135deg,#1a1a2e,#16213e);">
             @if($empresa && $empresa->imagen_nombre)
@@ -110,6 +137,7 @@
                 </div>
             </div>
         </div>
+
         @if($empresa && $empresa->mision)
         <div class="carousel-item" style="background: linear-gradient(135deg,#16213e,#0f3460);">
             <div class="carousel-caption text-center">
@@ -118,6 +146,7 @@
             </div>
         </div>
         @endif
+
         @if($empresa && $empresa->vision)
         <div class="carousel-item" style="background: linear-gradient(135deg,#0f3460,#533483);">
             <div class="carousel-caption text-center">
@@ -127,6 +156,7 @@
         </div>
         @endif
     </div>
+
     <button class="carousel-control-prev" type="button" data-bs-target="#hero-carousel" data-bs-slide="prev">
         <span class="carousel-control-prev-icon"></span>
     </button>
@@ -135,14 +165,13 @@
     </button>
 </div>
 
+{{-- ── Nosotros ── --}}
 @if($empresa)
-
 <section id="nosotros" class="py-5">
     <div class="container">
         <div class="row align-items-center g-5">
             <div class="col-lg-6">
-                <span class="text-primary fw-semibold text-uppercase small">Sobre Nosotros</span>
-                <h2 class="section-title mt-2 mb-4">{{ $empresa->nombre }}</h2>
+                <h2 class="section-title-left mt-2 mb-4">{{ $empresa->nombre }}</h2>
                 @if($empresa->descripcion)
                     <p class="text-muted fs-5">{{ $empresa->descripcion }}</p>
                 @endif
@@ -154,9 +183,11 @@
             </div>
             <div class="col-lg-6 text-center">
                 @if($empresa->imagen_nombre)
-                    <img src="{{ asset('storage/' . $empresa->imagen_nombre) }}" alt="{{ $empresa->nombre }}" class="img-fluid rounded-3 shadow">
+                    <img src="{{ asset('storage/' . $empresa->imagen_nombre) }}"
+                         alt="{{ $empresa->nombre }}" class="img-fluid rounded-3 shadow">
                 @else
-                    <div class="rounded-3 p-5 d-flex align-items-center justify-content-center" style="min-height:300px; background: linear-gradient(135deg,#696cff,#5f61e6);">
+                    <div class="rounded-3 p-5 d-flex align-items-center justify-content-center"
+                         style="min-height:300px; background: linear-gradient(135deg,#696cff,#5f61e6);">
                         <i class="bx bx-ambulance text-white" style="font-size:8rem;"></i>
                     </div>
                 @endif
@@ -164,13 +195,14 @@
         </div>
     </div>
 </section>
+@endif
 
-@if($empresa->mision || $empresa->vision)
+{{-- ── Misión y Visión ── --}}
+@if($empresa && ($empresa->mision || $empresa->vision))
 <section id="mision" class="py-5 bg-light">
     <div class="container">
         <div class="text-center mb-5">
-            <span class="text-primary fw-semibold text-uppercase small">Lo que nos guía</span>
-            <h2 class="section-title mx-auto mt-2">Misión y Visión</h2>
+            <h2 class="section-title">Misión y Visión</h2>
         </div>
         <div class="row g-4">
             @if($empresa->mision)
@@ -204,14 +236,18 @@
 </section>
 @endif
 
-@if($empresa->valores)
+{{-- ── Valores ── --}}
+@if($empresa && $empresa->valores)
 <section id="valores" class="py-5">
     <div class="container">
         <div class="text-center mb-5">
-            <span class="text-primary fw-semibold text-uppercase small">Nuestros principios</span>
-            <h2 class="section-title mx-auto mt-2">Valores</h2>
+            <h2 class="section-title">Valores</h2>
         </div>
-        @php $valoresList = array_filter(array_map('trim', preg_split('/[\n,]+/', $empresa->valores))); @endphp
+        @php
+            $valoresList = array_filter(
+                array_map('trim', preg_split('/[\n,]+/', $empresa->valores))
+            );
+        @endphp
         <div class="row g-3 justify-content-center">
             @foreach($valoresList as $valor)
             <div class="col-sm-6 col-md-4 col-lg-3">
@@ -226,11 +262,12 @@
 </section>
 @endif
 
+{{-- ── Contacto ── --}}
+@if($empresa && ($empresa->telefono || $empresa->correo || $empresa->sitio_web || $empresa->direccion))
 <section id="contacto" class="py-5 bg-light">
     <div class="container">
         <div class="text-center mb-5">
-            <span class="text-primary fw-semibold text-uppercase small">Encuéntranos</span>
-            <h2 class="section-title mx-auto mt-2">Contacto</h2>
+            <h2 class="section-title">Contacto</h2>
         </div>
         <div class="row g-4 justify-content-center">
             @if($empresa->telefono)
@@ -256,7 +293,9 @@
                 <div class="card card-info text-center p-4">
                     <i class="bx bx-globe text-primary fs-2 mb-2"></i>
                     <h6 class="fw-semibold">Sitio Web</h6>
-                    <a href="{{ $empresa->sitio_web }}" target="_blank" class="text-primary">{{ $empresa->sitio_web }}</a>
+                    <a href="{{ $empresa->sitio_web }}" target="_blank" class="text-primary">
+                        {{ $empresa->sitio_web }}
+                    </a>
                 </div>
             </div>
             @endif
@@ -272,8 +311,10 @@
         </div>
     </div>
 </section>
+@endif
 
-@else
+{{-- Sin empresa registrada --}}
+@if(!$empresa)
 <section class="py-5 text-center">
     <div class="container">
         <i class="bx bx-info-circle text-muted" style="font-size:4rem;"></i>
@@ -283,6 +324,7 @@
 </section>
 @endif
 
+{{-- ── Footer ── --}}
 <footer class="py-4">
     <div class="container text-center">
         <p class="mb-1">

@@ -132,6 +132,15 @@
                 </option>
             @endforeach
         </select>
+
+    <br>
+
+    <!-- filtro fecha -->
+     <form method="GET" action="{{ url()->current() }}">
+
+    <input type="date" name="fecha_inicio" value="{{ request('fecha_inicio') }}">
+    <input type="date" name="fecha_fin" value="{{ request('fecha_fin') }}">
+
     </form> 
 
     <div class="row g-4">

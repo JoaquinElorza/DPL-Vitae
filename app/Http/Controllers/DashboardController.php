@@ -14,14 +14,20 @@ class DashboardController extends Controller
         $ambulancias = Ambulancia::select('id_ambulancia', 'placa')->get();
 
         $servicios = Servicio::query()
-        ->when($request->tipo, function ($q, $tipo) {
+        ->when($request->tipo, function ($q, $tipo) { //tipo servicio
             $q->where('tipo', $tipo);
         })
-        ->when($request->estado, function ($q, $estado) {
+        ->when($request->estado, function ($q, $estado) { //estado del servicio
             $q->where('estado', $estado);
         })
-        ->when($request->ambulancia, function ($q, $ambulancia) {
+        ->when($request->ambulancia, function ($q, $ambulancia) { //por ambulancia (placa)
             $q->where('id_ambulancia', $ambulancia);
+        })
+        ->when($request->fecha_inicio, function ($q, $fecha) { //filtro por rango de fechas
+            $q->whereDate('fecha_hora', '>=', $fecha);
+        })
+        ->when($request->fecha_fin, function ($q, $fecha) {
+            $q->whereDate('fecha_hora', '<=', $fecha . ' 23:59:59');
         })
         ->get();
 

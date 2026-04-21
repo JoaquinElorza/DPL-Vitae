@@ -98,17 +98,34 @@
     </div>
 
     <form method="GET" action="{{ url()->current() }}">
-        <select name="tipo" class="form-select" onchange="this.form.submit()">
-            <option value="">Todos</option>
+        
 
+    
+
+    <!-- filtro tipo -->
+    <select name="tipo">
+            <option value="">Todos los tipos</option>
             @foreach ($tipos as $value => $label)
                 <option value="{{ $value }}" {{ request('tipo') == $value ? 'selected' : '' }}>
                     {{ $label }}
                 </option>
             @endforeach
         </select>
-    </form>
 
+     <!-- filtro estado -->
+    <select name="estado">
+        <option value="">Todos los estados</option>
+            @foreach ($estados as $value => $label)
+                <option value="{{ $value }}" {{ request('estado') == $value ? 'selected' : '' }}>
+                    {{ $label }}
+                </option>
+            @endforeach
+        </select>
+    </form> 
+
+    <!-- filtro estado -->
+
+    <button type="submit">Filtrar</button>
 
     <div class="row g-4">
 

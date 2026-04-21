@@ -9,23 +9,13 @@ use Illuminate\Http\Request;
 
 class ServicioController extends Controller
 {
-   public function index(Request $request)
+   public function index()
     {
-        $query = Servicio::query();
-
-        if ($request->filled('tipo')) { //cambia 'tipo'
-            $query->where('tipo', $request->tipo); // los 'tipo' se cambian
-        }
 
         $servicio = $query->get();
 
-        $tipos = [ //se puede cambiar
-            'Traslado' => 'Traslado',
-            'Evento' => 'Evento',
-            'Otro' => 'Otro'
-        ];
 
-        $servicios = Servicio::with(['ambulancia', 'cliente.User'])->paginate(15);
+        $servicios = Servicio::with(['ambulancia', 'cliente.usuario'])->paginate(15);
         return view('servicios.index', compact('servicios'));
     } 
 

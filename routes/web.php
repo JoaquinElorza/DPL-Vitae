@@ -19,6 +19,7 @@ use App\Http\Controllers\DireccionController;
 use App\Http\Controllers\CotizacionController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\PagoController;
+use App\Http\Controllers\DashboardController;
 
 // ── Rutas públicas ──────────────────────────────────────────────────────────
 Route::get('/', function () {
@@ -61,7 +62,7 @@ Route::post('webhooks/mercadopago', [PagoController::class, 'webhook'])
 // ── Panel de administración ─────────────────────────────────────────────────
 Route::middleware(['auth', 'verified', 'es.admin'])->group(function () {
 
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::redirect('settings', 'settings/profile');
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');

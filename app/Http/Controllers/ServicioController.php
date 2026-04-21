@@ -11,11 +11,11 @@ use Illuminate\Validation\ValidationException;
 
 class ServicioController extends Controller
 {
-    public function index()
+   public function index()
     {
         $servicios = Servicio::with(['ambulancia', 'cliente.usuario', 'operador.usuario'])->paginate(15);
         return view('servicios.index', compact('servicios'));
-    }
+    } 
 
     public function create()
     {

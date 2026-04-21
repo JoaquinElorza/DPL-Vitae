@@ -97,6 +97,52 @@
 
     </div>
 
+    <form method="GET" action="{{ url()->current() }}">
+        
+
+    <button type="submit">Filtrar</button>
+
+    <!-- filtro tipo -->
+    <select name="tipo">
+            <option value="">Todos los tipos</option>
+            @foreach ($tipos as $value => $label)
+                <option value="{{ $value }}" {{ request('tipo') == $value ? 'selected' : '' }}>
+                    {{ $label }}
+                </option>
+            @endforeach
+        </select>
+
+     <!-- filtro estado -->
+    <select name="estado">
+        <option value="">Todos los estados</option>
+            @foreach ($estados as $value => $label)
+                <option value="{{ $value }}" {{ request('estado') == $value ? 'selected' : '' }}>
+                    {{ $label }}
+                </option>
+            @endforeach
+        </select>
+
+     <!-- filtro ambulancia -->
+    <select name="ambulancia">
+        <option value="">Todas las ambulancias</option>
+            @foreach ($ambulancias as $ambulancia)
+                <option value="{{ $ambulancia->id_ambulancia }}"
+                {{ request('ambulancia') == $ambulancia->id_ambulancia ? 'selected' : '' }}>
+                    {{ $ambulancia->placa }}
+                </option>
+            @endforeach
+        </select>
+
+    <br>
+
+    <!-- filtro fecha -->
+     <form method="GET" action="{{ url()->current() }}">
+
+    <input type="date" name="fecha_inicio" value="{{ request('fecha_inicio') }}">
+    <input type="date" name="fecha_fin" value="{{ request('fecha_fin') }}">
+
+    </form> 
+
     <div class="row g-4">
 
         <div class="col-12">
@@ -118,7 +164,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($ultimosServicios as $servicio)
+
+
+                            @forelse($servicios as $servicio)
                             <tr>
                                 <td>{{ $servicio->id_servicio }}</td>
                                 <td>{{ \Carbon\Carbon::parse($servicio->fecha_hora)->format('d/m/Y H:i') }}</td>

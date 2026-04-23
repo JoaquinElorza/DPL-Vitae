@@ -66,9 +66,17 @@ class ParamedicoController extends Controller
     }
 
     // ── CRUD ────────────────────────────────────────────────────────────────
-    public function index()
+    public function index(Request $request)
     {
-        $paramedicos = Paramedico::with('usuario')->paginate(8);
+        $paramedicos = Paramedico::with('usuario')
+                        // filtro por rango de salario
+        ->when($request->salario_min, function ($q, $salario_min) {
+            $q->where('salario_hora', '>=', $salario_min);
+        })
+        ->when($request->salario_max, function ($q, $salario_max) {
+            $q->where('salario_hora', '<=', $salario_max);
+        })
+        ->paginate(8);
         return view('paramedicos.index', compact('paramedicos'));
     }
 

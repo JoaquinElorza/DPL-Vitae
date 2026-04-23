@@ -123,14 +123,14 @@
                                 @error('nombre')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             {{-- poner validacion de solo 10 digitos --}}
-                            <div class="col-md-6"> //dcdc
+                            <div class="col-md-6"> 
                                 <label class="form-label">Teléfono <span class="text-danger">*</span></label>
                                 <input type="text" 
                                 name="telefono" 
                                 class="form-control @error('telefono') is-invalid @enderror"
                                 value="{{ old('telefono') }}"
                                 placeholder="Ej. 9511234567"
-                                pattern="[0-9]{15}"
+                                pattern="[0-9]{10}"
                                 maxlength="15"
                                 required>
                                 @error('telefono')<div class="invalid-feedback">{{ $message }}</div>@enderror

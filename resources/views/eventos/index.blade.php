@@ -5,6 +5,33 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
+
+<!-- Filtros -->
+     <form method="GET" action="{{ url()->current() }}">
+
+    <button type="submit">Filtrar</button>
+
+<br>
+
+      <!-- filtro por rango de horas-->>
+    <input type="number" name="duracion_min" placeholder="Minimo de horas"
+        value="{{ request('duracion_min') }}">
+
+    <input type="number" name="duracion_max" placeholder="Máximo de horas"
+        value="{{ request('duracion_max') }}">
+
+<br>
+
+     <!-- filtro por rango de personas-->>
+    <input type="number" name="personas_min" placeholder="Mínimo de personas"
+        value="{{ request('personas_min') }}">
+
+    <input type="number" name="personas_max" placeholder="Máximo de personas"
+        value="{{ request('personas_max') }}">
+
+</form>
+
+
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Eventos</h5>

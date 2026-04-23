@@ -11,80 +11,92 @@ use Illuminate\Validation\ValidationException;
 
 class ServicioController extends Controller
 {
-    const TIPOS   = ['Traslado', 'Evento', 'Emergencia', 'Otro'];
-    const ESTADOS = ['Activo', 'Finalizado', 'Cancelado'];
-
-    private function rules(): array
+   public function index(Request $request)
     {
-        return [
-            'tipo'          => ['nullable', 'in:Traslado,Evento,Emergencia,Otro'],
-            'estado'        => ['required', 'in:Activo,Finalizado,Cancelado'],
-            'fecha_hora'    => ['required', 'date'],
-            'hora_salida'   => ['nullable', 'date', 'after:fecha_hora'],
-            'costo_total'   => ['required', 'numeric', 'min:0'],
-            'observaciones' => ['nullable', 'string', 'max:500'],
-            'id_ambulancia' => ['required', 'exists:ambulancia,id_ambulancia'],
-            'id_cliente'    => ['required', 'exists:cliente,id_usuario'],
-            'id_operador'   => ['required', 'exists:operador,id_usuario'],
+    $ambulancias = Ambulancia::select('id_ambulancia', 'placa')->get();
+    $operadores = Operador::with('usuario')->get();
+
+    $servicios = Servicio::with(['ambulancia', 'cliente.usuario', 'operador.usuario'])
+        ->when($request->tipo, function ($q, $tipo) {
+            $q->where('tipo', $tipo);
+        })
+        ->when($request->estado, function ($q, $estado) {
+            $q->where('estado', $estado);
+        })
+        ->when($request->ambulancia, function ($q, $ambulancia) {
+            $q->where('id_ambulancia', $ambulancia);
+        })
+        ->when($request->operador, function ($q, $operador) {
+            $q->where('id_operador', $operador);
+        })
+        // filtro por rango de costo
+        ->when($request->costo_min, function ($q, $costo) {
+            $q->where('costo_total', '>=', $costo);
+        })
+        ->when($request->costo_max, function ($q, $costo) {
+            $q->where('costo_total', '<=', $costo);
+        })
+        //filtro por rango de fecha
+        ->when($request->fecha_inicio, function ($q, $fecha) {
+            $q->where('fecha_hora', '>=', $fecha);
+        })
+        ->when($request->fecha_fin, function ($q, $fecha) {
+            $q->where('fecha_hora', '<=', $fecha);
+        })
+        ->paginate(8);
+
+        $tipos = [
+            'Traslado' => 'Traslados',
+            'Evento' => 'Eventos',
+            'Otro' => 'Otros'
         ];
-    }
 
-    private function messages(): array
-    {
-        return [
-            'tipo.in'                => 'El tipo de servicio seleccionado no es válido.',
+        /*
+        $estados = [
+            'Pendiente' => 'Pendiente',
+            'En curso' => 'En curso',
+            'Completado' => 'Completado',
+            'Cancelado' => 'Cancelado'
+        ]; 
+        */
 
-            'estado.required'        => 'El estado es obligatorio.',
-            'estado.in'              => 'El estado seleccionado no es válido.',
-
-            'fecha_hora.required'    => 'La fecha y hora de inicio son obligatorias.',
-            'fecha_hora.date'        => 'La fecha y hora de inicio no son válidas.',
-
-            'hora_salida.date'       => 'La hora de salida no es válida.',
-            'hora_salida.after'      => 'La hora de salida debe ser posterior a la fecha de inicio.',
-
-            'costo_total.required'   => 'El costo total es obligatorio.',
-            'costo_total.numeric'    => 'El costo total debe ser un número.',
-            'costo_total.min'        => 'El costo total no puede ser negativo.',
-
-            'observaciones.max'      => 'Las observaciones no pueden superar 500 caracteres.',
-
-            'id_ambulancia.required' => 'Debes seleccionar una ambulancia.',
-            'id_ambulancia.exists'   => 'La ambulancia seleccionada no es válida.',
-
-            'id_cliente.required'    => 'Debes seleccionar un cliente.',
-            'id_cliente.exists'      => 'El cliente seleccionado no es válido.',
-
-            'id_operador.required'   => 'Debes seleccionar un operador.',
-            'id_operador.exists'     => 'El operador seleccionado no es válido.',
+        $estados = [
+            'Activo' => 'Activo',
+            'Finalizado' => 'Finalizado',
+            'Cancelado' => 'Cancelado',
         ];
-    }
 
-    public function index()
-    {
-        $servicios = Servicio::with(['ambulancia', 'cliente.usuario', 'operador.usuario'])->paginate(8);
-        return view('servicios.index', compact('servicios'));
-    }
+
+   //     $servicios = Servicio::with(['ambulancia', 'cliente.usuario', 'operador.usuario'])->paginate(8);
+        return view('servicios.index', compact('servicios', 'tipos', 'estados', 'ambulancias', 'operadores'));
+    } 
 
     public function create()
     {
         $ambulancias = Ambulancia::all();
-        $clientes    = Cliente::with('usuario')->get();
-        $operadores  = Operador::with('usuario')->get();
-        $tipos       = self::TIPOS;
-        $estados     = self::ESTADOS;
-        return view('servicios.create', compact('ambulancias', 'clientes', 'operadores', 'tipos', 'estados'));
+        $clientes = Cliente::with('usuario')->get();
+        $operadores = Operador::with('usuario')->get();
+        return view('servicios.create', compact('ambulancias', 'clientes', 'operadores'));
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate($this->rules(), $this->messages());
+        $data = $request->validate([
+            'costo_total'   => 'required|numeric',
+            'estado'        => 'required|string',
+            'fecha_hora'    => 'required|date',
+            'hora_salida'   => 'nullable|date',
+            'observaciones' => 'nullable|string',
+            'tipo'          => 'nullable|string',
+            'id_ambulancia' => 'required|exists:ambulancia,id_ambulancia',
+            'id_cliente'    => 'required|exists:cliente,id_usuario',
+            'id_operador'   => 'required|exists:operador,id_usuario',
+        ]);
 
         $this->validarDisponibilidadOperador($request->id_operador, $request->fecha_hora);
 
         Servicio::create($data);
-
-        return redirect()->route('servicios.index')->with('success', 'Servicio creado correctamente.');
+        return redirect()->route('servicios.index')->with('success', 'Servicio creado.');
     }
 
     public function show(Servicio $servicio)
@@ -96,32 +108,40 @@ class ServicioController extends Controller
     public function edit(Servicio $servicio)
     {
         $ambulancias = Ambulancia::all();
-        $clientes    = Cliente::with('usuario')->get();
-        $operadores  = Operador::with('usuario')->get();
-        $tipos       = self::TIPOS;
-        $estados     = self::ESTADOS;
-        return view('servicios.edit', compact('servicio', 'ambulancias', 'clientes', 'operadores', 'tipos', 'estados'));
+        $clientes = Cliente::with('usuario')->get();
+        $operadores = Operador::with('usuario')->get();
+        return view('servicios.edit', compact('servicio', 'ambulancias', 'clientes', 'operadores'));
     }
 
     public function update(Request $request, Servicio $servicio)
     {
-        $data = $request->validate($this->rules(), $this->messages());
+        $data = $request->validate([
+            'costo_total'   => 'required|numeric',
+            'estado'        => 'required|string',
+            'fecha_hora'    => 'required|date',
+            'hora_salida'   => 'nullable|date',
+            'observaciones' => 'nullable|string',
+            'tipo'          => 'nullable|string',
+            'id_ambulancia' => 'required|exists:ambulancia,id_ambulancia',
+            'id_cliente'    => 'required|exists:cliente,id_usuario',
+            'id_operador'   => 'required|exists:operador,id_usuario',
+        ]);
 
         $this->validarDisponibilidadOperador($request->id_operador, $request->fecha_hora, $servicio->id_servicio);
 
         $servicio->update($data);
-
-        return redirect()->route('servicios.index')->with('success', 'Servicio actualizado correctamente.');
+        return redirect()->route('servicios.index')->with('success', 'Servicio actualizado.');
     }
 
     public function destroy(Servicio $servicio)
     {
         $servicio->delete();
-        return redirect()->route('servicios.index')->with('success', 'Servicio eliminado correctamente.');
+        return redirect()->route('servicios.index')->with('success', 'Servicio eliminado.');
     }
 
     private function validarDisponibilidadOperador(int $idOperador, string $fechaHora, ?int $excluirServicioId = null): void
     {
+        // Operador con servicio activo (en curso) no puede ser asignado
         $activo = Servicio::where('id_operador', $idOperador)
             ->where('estado', 'Activo')
             ->when($excluirServicioId, fn($q) => $q->where('id_servicio', '!=', $excluirServicioId))
@@ -133,6 +153,7 @@ class ServicioController extends Controller
             ]);
         }
 
+        // Operador ya asignado en la misma fecha y hora exacta
         $conflicto = Servicio::where('id_operador', $idOperador)
             ->where('fecha_hora', $fechaHora)
             ->when($excluirServicioId, fn($q) => $q->where('id_servicio', '!=', $excluirServicioId))

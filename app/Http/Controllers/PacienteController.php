@@ -72,10 +72,23 @@ class PacienteController extends Controller
     }
 
     // ── CRUD ────────────────────────────────────────────────────────────────
-    public function index()
+    public function index(Request $request)
     {
-        $pacientes = Paciente::with(['servicio', 'direccion'])->paginate(8);
-        return view('pacientes.index', compact('pacientes'));
+        $pacientes = Paciente::with(['servicio', 'direccion'])
+        ->when($request->sexo, function ($q, $sexo) {
+            $q->where('sexo', $sexo);
+        })
+        ->when($request->fecha_inicio && $request->fecha_fin, function ($q) use ($request) {
+            $q->whereBetween('fecha_nacimiento', [$request->fecha_inicio, $request->fecha_fin]);
+        })
+        ->paginate(8);
+
+        $sexos = [
+            'Masculino' => 'Masculino',
+            'Femenino' => 'Femenino',
+        ];
+
+        return view('pacientes.index', compact('pacientes', 'sexos'));
     }
 
     public function create()

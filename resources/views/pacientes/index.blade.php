@@ -5,6 +5,31 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
+
+<!-- filtros -->
+    <form method="GET" action="{{ url()->current() }}">
+        
+
+    <button type="submit">Filtrar</button>
+
+    <!-- filtro sexo -->
+    <select name="sexo">
+            <option value="">Todos los pacientes</option>
+            @foreach ($sexos as $value => $label)
+                <option value="{{ $value }}" {{ request('sexo') == $value ? 'selected' : '' }}>
+                    {{ $label }}
+                </option>
+            @endforeach
+        </select>
+
+        <br>
+        
+    <!--filtro fechas de nacimiento-->
+    <input type="date" name="fecha_inicio" value="{{ request('fecha_inicio') }}">
+    <input type="date" name="fecha_fin" value="{{ request('fecha_fin') }}">
+
+</form>
+
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Pacientes</h5>
@@ -22,7 +47,9 @@
                         <th>Ap. Materno</th>
                         <th>Sexo</th>
                         <th>Fecha Nac.</th>
+                        <!--
                         <th>Servicio</th>
+-->
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -35,7 +62,9 @@
                         <td>{{ $paciente->ap_materno ?? '—' }}</td>
                         <td>{{ $paciente->sexo ?? '—' }}</td>
                         <td>{{ $paciente->fecha_nacimiento ?? '—' }}</td>
+                        <!--
                         <td>{{ $paciente->id_servicio }}</td>
+-->
                         <td>
                             <a href="{{ route('pacientes.show', $paciente) }}" class="btn btn-sm btn-info"><i class="bx bx-show"></i></a>
                             <a href="{{ route('pacientes.edit', $paciente) }}" class="btn btn-sm btn-warning"><i class="bx bx-edit"></i></a>

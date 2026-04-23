@@ -8,10 +8,25 @@ use Illuminate\Http\Request;
 
 class EventoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $eventos = Evento::with('servicio')->paginate(8);
-        return view('eventos.index', compact('eventos'));
+        $eventos = Evento::with('servicio')
+        //duracion
+        ->when($request->duracion_min, function ($q, $duracion) {
+            $q->where('duracion', '>=', $duracion);
+        })
+        ->when($request->duracion_max, function ($q, $duracion) {
+            $q->where('duracion', '<=', $duracion);
+        })
+        //personas
+        ->when($request->personas_min, function ($q, $personas) {
+            $q->where('personas', '>=', $personas);
+        })
+        ->when($request->personas_max, function ($q, $personas) {
+            $q->where('personas', '<=', $personas);
+        })
+        ->paginate(8);
+        return view('eventos.index', compact('eventos', 'eventos'));
     }
 
     public function create()
